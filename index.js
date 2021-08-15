@@ -3,9 +3,20 @@ const refs = {
   min: document.querySelector('[data-value="mins"]'),
   hour: document.querySelector('[data-value="hours"]'),
   day: document.querySelector('[data-value="days"]'),
+  startBtn: document.querySelector('.start'),
+  stopBtn: document.querySelector('.stop'),
+  
 };
 
+
 const finalTime = new Date('Aug 17, 2021').getTime();
+
+
+let id = null;
+
+refs.startBtn.addEventListener('click', timerStart)
+refs.stopBtn.addEventListener('click', () => clearInterval(id));
+
 
 let currentTime = null;
 let time = null;
@@ -14,74 +25,87 @@ let hours = null;
 let mins = null;
 let secs = null;
 
+function timerStart() {
+  id = setInterval(timer, 1000);
+}
 
 function timer() {
   currentTime = Date.now();
 
   time = finalTime - currentTime;
 
-  days = Math.floor(time / (1000 * 60 * 60 * 24));
-  hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  mins = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
-  secs = Math.floor((time % (1000 * 60)) / 1000);
+if (time < 0) {
+  clearInterval(id)
+  return
+  }
+  days = Math.floor(time / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+  hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+  mins = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+  secs = Math.floor((time % (1000 * 60)) / 1000).toString().padStart(2, '0');
 
-  refs.sec.textContent = pad(secs);
-  refs.min.textContent = pad(mins);
-  refs.hour.textContent = pad(hours);
-  refs.day.textContent = pad(days);
+  refs.sec.textContent = secs;
+  refs.min.textContent = mins;
+  refs.hour.textContent = hours;
+  refs.day.textContent = days;
 }
 
-function pad(value) {
-  return String(value).padStart(2, '0');
-}
 
-function timerStart() {
-  setInterval(timer, 1000);
-}
 
-timerStart();
 
 // class CountdownTimer {
-//   constructor() {
-//     this.refs = {
-//       sec: document.querySelector('[data-value="secs"]'),
-//       min: document.querySelector('[data-value="mins"]'),
-//       hour: document.querySelector('[data-value="hours"]'),
-//       day: document.querySelector('[data-value="days"]'),
-//       };
-//     this.finalTime = null;
-//     this.currentTime = null;
+//   constructor({ selector, targetDate }) {
+//     this.selector = selector;
+//     this.targetDate = targetDate;
+//   }
+//   getRefs() {
 
-//     };
-//     getFinalTime() {
-//        return this.finalTime.getTime()
+//     const container = document.querySelector(this.selector);
+//     const days = container.querySelector('[data-value="days"]');
+//     const hours = container.querySelector('[data-value="hours"]');
+//     const minutes = container.querySelector('[data-value="mins"]');
+//     const seconds = container.querySelector('[data-value="secs"]');
+//     const startBtn = container.querySelector('.start');
+//     const stopBtn = container.querySelector('.stop');
+//     this.interval = null;
+// return {startBtn, stopBtn, container, days, hours, minutes, seconds}
+//   }
+//   updateTimer({container, days, hours, minutes, seconds}) {
+//     const time = this.targetDate - Date.now();
+
+//     if (time < 0) {
+//       clearInterval(this.interval);
+
+//     container.innerHTML = "<h1>This is over</h1>"
+//       return
 //     }
+//     days.textContent =  Math.floor(time / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+//     hours.textContent =Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+//     minutes.textContent = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+//     seconds.textContent = Math.floor((time % (1000 * 60)) / 1000).toString().padStart(2, '0');
 
-//     timer() {
-//   this.currentTime = Date.now();
+// }
+//   start = () => {
+//     setInterval(() => {
+//        this.updateTimer(this.getRefs()), 1000
+//     })
+//     console.log('start');
+//   }
+//   stop = () => {
+//     clearInterval(this.interval);
 
-//   const time = this.getFinalTime() - this.currentTime;
+//     console.log('stop');
+//   }
+// //   addListeners ({startBtn, stopBtn}) {
+// // console.log(startBtn, stopBtn);
+// //     startBtn.addEventListener('click', this.start);
+// //     stopBtn.addEventListener('click', this.stop);
+// //   }
 
-//   const days = Math.floor(time / (1000 * 60 * 60 * 24));
-//   const hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-//   const mins = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
-//   const secs = Math.floor((time % (1000 * 60)) / 1000);
-
-//   this.refs.sec.textContent = pad(secs);
-//   this.refs.min.textContent = pad(mins);
-//   this.refs.hour.textContent = pad(hours);
-//   this.refs.day.textContent = pad(days);
-//     };
-
-//      pad(value) {
-//          return String(value).padStart(2, '0');         
-//     }
-//     timerStart() {
-
-//   return setInterval(timer, 1000);
-//     };
 // };
 
+// const timer = new CountdownTimer({
+//  selector: '#timer-1',
+//  targetDate: new Date('Aug 15, 2021 15:09:00'),
+// })
 
-
-
+//   timer.start();
